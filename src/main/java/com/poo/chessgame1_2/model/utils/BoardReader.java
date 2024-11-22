@@ -8,30 +8,38 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class BoardReader extends FilesIO{
+/**
+ * Clase responsable de leer y cargar el estado del tablero de ajedrez desde un archivo.
+ * Esta clase interpreta el archivo de anotaciones del tablero y coloca las piezas en el tablero,
+ * además de configurar los jugadores, el tipo de juego y el jugador que tiene el próximo movimiento.
+ */
+public class BoardReader extends FilesIO {
 
     private final Board board;
     private String filePath;
 
+    /**
+     * Constructor que inicializa la instancia de BoardReader con un tablero.
+     *
+     * @param board El tablero donde se establecerá el estado.
+     */
     public BoardReader(Board board){
         this.board = board;
     }
 
-
-
     /**
-     * Receive new layout file path and ready to set new layout using setData()
+     * Establece la ruta del archivo del cual se leerá la disposición del tablero.
      *
-     * @param filePath path of file with board annotation
+     * @param filePath Ruta del archivo con la anotación del tablero.
      */
     public void setFilePath(String filePath){
         this.filePath = filePath;
     }
 
     /**
-     * Get information of pieces placed in board from board annotation file and set it on board.
-     *
-    */
+     * Lee la información de las piezas desde el archivo de anotación y las coloca en el tablero.
+     * También configura el jugador actual, el tipo de juego y los jugadores.
+     */
     public void setData(){
         setScanner(filePath);
 
@@ -41,8 +49,8 @@ public class BoardReader extends FilesIO{
         while (scanner.hasNext()){
             String line = scanner.nextLine();
 
-            //commented parts in boardStatusAnnotation
-            if(line.length() >= 1  && line.charAt(0) == '#'){
+            // Omitir las líneas de comentarios en el archivo
+            if(line.length() >= 1 && line.charAt(0) == '#'){
                 continue;
             }
 
@@ -64,6 +72,7 @@ public class BoardReader extends FilesIO{
                 }
             }
         }
+
         if(playersData.size() >= 2){
             setPlayers(playersData.get(0),playersData.get(1));
         }
@@ -72,11 +81,9 @@ public class BoardReader extends FilesIO{
     }
 
     /**
-     * Transform string (row) piece data to ArrayList and set it on board
+     * Convierte los datos de la pieza en formato de texto a objetos y coloca la pieza en el tablero.
      *
-     * @param pieceRowData String in format cTaC, c - piece color {w, b}, T - piece type {B, K, N, P, Q, R, E}
-     *                     a - coordinate in letter coordination system {a,b,c,d,e,f,g,h}
-     *                     C - int coordinate {1,2,3,4,5,6,7,8}
+     * @param pieceRowData Datos de la pieza en formato de texto (ej. wKc1 para una pieza blanca rey en la casilla c1).
      */
     private void setPiece(String pieceRowData){
 
@@ -129,9 +136,9 @@ public class BoardReader extends FilesIO{
     }
 
     /**
-     * Set current move player
+     * Establece el color del jugador que tiene el próximo movimiento.
      *
-     * @param color current move player color
+     * @param color Color del jugador (w para blanco, b para negro).
      */
     private void setCurrentMoveColor(char color){
         if(color == 'w'){
@@ -140,24 +147,22 @@ public class BoardReader extends FilesIO{
         else{
             board.setCurrentPlayerColor(Color.BLACK);
         }
-
     }
 
     /**
-     * Set Game type if
+     * Establece el tipo de juego basado en el caracter leído.
      *
-     * @param gameType game type char 'm' or 's'
+     * @param gameType Tipo de juego (m para multijugador, s para un jugador).
      */
     private void setGameType(char gameType){
         board.setGameType(GameType.MULTIPLAYER);
     }
 
     /**
+     * Decodifica la información de un jugador a un objeto Player.
      *
-     * Player's data decoder.
-     *
-     * @param playerData player data
-     * @return player instance with setted player data
+     * @param playerData Datos del jugador en formato de texto.
+     * @return Instancia de Player con la información decodificada.
      */
     private Player getPlayerFromData(String playerData){
         Color playerColor;
@@ -175,16 +180,12 @@ public class BoardReader extends FilesIO{
     }
 
     /**
-     * Set saved players infromation
+     * Establece la información de los jugadores en el tablero.
      *
-     * @param player1SData player1 data
-     * @param player2Data player2 data
+     * @param player1SData Datos del jugador 1.
+     * @param player2Data Datos del jugador 2.
      */
     private void setPlayers(String player1SData, String player2Data){
-
-        board.setPlayer(getPlayerFromData(player1SData),getPlayerFromData(player2Data));
-
+        board.setPlayer(getPlayerFromData(player1SData), getPlayerFromData(player2Data));
     }
-
 }
-

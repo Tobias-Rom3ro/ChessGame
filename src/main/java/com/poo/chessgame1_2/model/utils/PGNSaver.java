@@ -9,21 +9,29 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * Clase encargada de guardar una partida de ajedrez en formato PGN.
+ * Permite agregar los movimientos de las piezas, generar un archivo PGN
+ * y guardar los detalles de la partida (jugadores, movimientos, etc.).
+ */
 public class PGNSaver extends FilesIO {
     private final String PGN_DIRECTORY_PATH = "/Saved PGN games/";
     private ArrayList<String> moves = new ArrayList<>();
 
+    /**
+     * Constructor que inicializa la creación del directorio para guardar archivos PGN.
+     */
     public PGNSaver() {
         createDirectory(System.getProperty("user.dir") + PGN_DIRECTORY_PATH);
     }
 
     /**
-     * Save move to PGN
+     * Añade un movimiento a la lista de movimientos guardados en formato PGN.
      *
-     * @param from Status of Square of start move piece location, format {Color pieceColor, PieceType pieceType,
-     *              int boardI, int boardJ}.
-     * @param to   Status of Square of end move piece location, format {Color pieceColor, PieceType pieceType,
-     *              int boardI, int boardJ}.
+     * @param from Estado de la casilla de inicio del movimiento, formato
+     *             {Color pieceColor, PieceType pieceType, int boardI, int boardJ}.
+     * @param to   Estado de la casilla de destino del movimiento, formato
+     *             {Color pieceColor, PieceType pieceType, int boardI, int boardJ}.
      */
     public void addMove(ArrayList<Object> from, ArrayList<Object> to) {
         PieceType fromPieceType = (PieceType) from.get(1);
@@ -39,19 +47,21 @@ public class PGNSaver extends FilesIO {
     }
 
     /**
-     * Save move as String to ArrayList moves
+     * Guarda el movimiento como una cadena de texto en la lista de movimientos.
      *
-     * @param pieceType type of moved piece
-     * @param toI       coordinate boardI to which piece was moved
-     * @param toJ       coordinate boardJ to which piece was moved
-     * @param isCapture is piece capture another piece
+     * @param pieceType  Tipo de pieza que se mueve.
+     * @param fromI      Coordenada I de la casilla de inicio.
+     * @param fromJ      Coordenada J de la casilla de inicio.
+     * @param toI        Coordenada I de la casilla de destino.
+     * @param toJ        Coordenada J de la casilla de destino.
+     * @param isCapture  Indica si el movimiento es una captura de pieza.
      */
     private void saveMoveAsString(PieceType pieceType, int fromI, int fromJ, int toI, int toJ, boolean isCapture) {
-        // String data to print
+        // Datos a imprimir
         String pieceTypeString = "B";
         char toIChar = (char) ('a' + toI);
         char fromIChar = (char) ('a' + fromI);
-        toJ++; // Coordinate starts from 1
+        toJ++; // La coordenada J comienza desde 1
         fromJ++;
 
         switch (pieceType) {
@@ -69,7 +79,6 @@ public class PGNSaver extends FilesIO {
                 break;
             case PAWN:
                 pieceTypeString = "P";
-                // pieceTypeString = "";
                 break;
             case QUEEN:
                 pieceTypeString = "Q";
@@ -86,10 +95,10 @@ public class PGNSaver extends FilesIO {
     }
 
     /**
-     * Print tag(event, site, date and player data)
+     * Imprime las etiquetas de la partida (evento, sitio, fecha y jugadores).
      *
-     * @param player1 player1, Player instance
-     * @param player2 player2, Player instance
+     * @param player1 Jugador 1, instancia de la clase Player.
+     * @param player2 Jugador 2, instancia de la clase Player.
      */
     private void printTags(Player player1, Player player2) {
         printWriter.println("[Event \"Partida de prueba :) \"]");
@@ -100,14 +109,14 @@ public class PGNSaver extends FilesIO {
     }
 
     /**
-     * Print all saved moves.
+     * Imprime todos los movimientos guardados en formato PGN.
      */
     private void printMovesData() {
         int counter = 1;
         int lineSize = 0;
         int maxLineSize = 255;
         for (int i = 0; i < moves.size(); i++) {
-            // print number of move
+            // Imprimir número de movimiento
             if (i % 2 == 0) {
                 printWriter.print(counter + ". ");
                 counter++;
@@ -127,10 +136,10 @@ public class PGNSaver extends FilesIO {
     }
 
     /**
-     * Save all data to file .pgn
+     * Guarda todos los datos de la partida en un archivo PGN.
      *
-     * @param player1 player1, Player instance
-     * @param player2 player2, Player instance
+     * @param player1 Jugador 1, instancia de la clase Player.
+     * @param player2 Jugador 2, instancia de la clase Player.
      */
     public void savePGN(Player player1, Player player2) {
         FileChooser fileChooser = new FileChooser();
@@ -140,7 +149,7 @@ public class PGNSaver extends FilesIO {
         File file = fileChooser.showSaveDialog(null);
 
         if (file != null) {
-            setPrintStreamForUser (file.getAbsolutePath());
+            setPrintStreamForUser(file.getAbsolutePath());
 
             printTags(player1, player2);
             printMovesData();

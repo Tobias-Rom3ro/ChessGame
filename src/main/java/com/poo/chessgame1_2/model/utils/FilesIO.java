@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+/**
+ * Clase que maneja las operaciones de entrada y salida de archivos, como leer y escribir en archivos.
+ * Permite trabajar con archivos dentro de la carpeta de recursos del programa o fuera de ella.
+ */
 public class FilesIO {
 
     PrintWriter printWriter;
@@ -14,10 +18,11 @@ public class FilesIO {
     private File file;
 
     /**
-     * Get file from resources folder
+     * Obtiene un archivo desde la carpeta de recursos.
      *
-     * @param fileName path of file to get
-     * @return File if it's opened successfully
+     * @param fileName Ruta del archivo a obtener.
+     * @return El archivo si se abre con éxito, null si ocurre un error.
+     * @throws NullPointerException si el archivo no está disponible.
      */
     private File getFileFromResource(String fileName) throws NullPointerException {
         try {
@@ -25,110 +30,110 @@ public class FilesIO {
             file = new File(filePath);
             return file;
         } catch (NullPointerException e) {
-            System.out.println("Board annotation isn't available!");
+            System.out.println("¡La anotación del tablero no está disponible!");
             e.printStackTrace();
         }
         return null;
     }
 
     /**
+     * Obtiene un archivo desde una ruta proporcionada.
      *
-     * @param fileName path of file to get
-     * @return File if it's opened successfully
+     * @param fileName Ruta del archivo a obtener.
+     * @return El archivo si se abre con éxito, null si ocurre un error.
+     * @throws NullPointerException si el archivo no está disponible.
      */
-    private File getFile(String fileName) throws NullPointerException{
+    private File getFile(String fileName) throws NullPointerException {
         try {
             file = new File(fileName);
             return file;
         } catch (NullPointerException e) {
-            System.out.println("Error while saving file!");
+            System.out.println("¡Error al guardar el archivo!");
             e.printStackTrace();
         }
         return null;
     }
 
     /**
-     * Set output stream (file from resorces)
+     * Configura el flujo de salida para un archivo ubicado en los recursos del programa.
      *
-     * @param filePath path of file to stream
+     * @param filePath Ruta del archivo para el flujo de salida.
      */
-    void setPrintStream(String filePath){
+    void setPrintStream(String filePath) {
         file = getFileFromResource(filePath);
         try {
             assert this.file != null;
             printWriter = new PrintWriter(this.file);
         } catch (FileNotFoundException e) {
-            System.out.println("Error while opening " + filePath + "file for write!");
+            System.out.println("¡Error al abrir el archivo " + filePath + " para escribir!");
             e.printStackTrace();
         }
     }
 
     /**
-     * Set output stream (file from program folder)
+     * Configura el flujo de salida para un archivo ubicado en la carpeta del programa.
      *
-     * @param filePath path of file to stream
+     * @param filePath Ruta del archivo para el flujo de salida.
      */
-    void setPrintStreamForUser(String filePath){
+    void setPrintStreamForUser(String filePath) {
         File file = getFile(filePath);
         createFile(filePath);
-
 
         try {
             assert file != null;
             printWriter = new PrintWriter(file);
         } catch (FileNotFoundException e) {
-            System.out.println("Error with opening " + filePath + "file for write!");
+            System.out.println("¡Error al abrir el archivo " + filePath + " para escribir!");
             e.printStackTrace();
         }
     }
 
-    void closePrintStream(){
+    /**
+     * Cierra el flujo de salida.
+     */
+    void closePrintStream() {
         printWriter.close();
         printWriter = null;
     }
 
     /**
-     * Set input stream
+     * Configura el flujo de entrada para un archivo ubicado en los recursos del programa.
      *
-     * @param filePath path of file to stream
+     * @param filePath Ruta del archivo para el flujo de entrada.
      */
-    void setScanner(String filePath){
+    void setScanner(String filePath) {
         File file = getFileFromResource(filePath);
         try {
             assert file != null;
             scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
-            System.out.println("Error while setting input stream!");
+            System.out.println("¡Error al configurar el flujo de entrada!");
             e.printStackTrace();
         }
     }
 
-
     /**
+     * Crea un nuevo archivo si no existe.
      *
-     * Create new file.
-     * @param filePath path of file to create
+     * @param filePath Ruta del archivo a crear.
      */
-    private void createFile(String filePath){
+    private void createFile(String filePath) {
         File file = getFile(filePath);
         try {
             assert file != null;
             file.createNewFile();
         } catch (IOException e) {
-            System.out.println("Error while creating file!");
+            System.out.println("¡Error al crear el archivo!");
             e.printStackTrace();
         }
     }
 
-
     /**
-     * Create directory
+     * Crea un directorio en la ruta especificada.
      *
-     * @param directoryPath path to directory to create.
+     * @param directoryPath Ruta del directorio a crear.
      */
-    void createDirectory(String directoryPath){
+    void createDirectory(String directoryPath) {
         new File(directoryPath).mkdirs();
-
     }
-
 }

@@ -1,0 +1,265 @@
+@startuml
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class BishopPiece {
+  + BishopPiece(Color):
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+}
+class Board {
+  + Board(Model):
+  + isOpponentPiece(int, int, Color): boolean
+  - isEnPassant(int, int, int, int): boolean
+  + getSquareStatus(int, int): ArrayList
+  - isPromotion(int, int, int, int): boolean
+  - loadBoard(): void
+  - makeRoqueMove(int, int, int, int): ArrayList
+  + isValidMove(int, int, int, int): boolean
+  - setTwoSquareMove(int, int, int, int): void
+  + makeMove(int, int, int, int): ArrayList
+  + isKing(int, int): boolean
+  + isEmptySquare(int, int): boolean
+  - isTwoSquareMove(int, int, int, int): boolean
+  - initBoardReader(): void
+  - makeEnPassant(int, int, int, int): ArrayList
+  + setPlayer(Player, Player): void
+  - makePromotion(int, int, int, int): void
+  + setSquare(Color, PieceType, int, int): void
+  - isRoque(int, int, int, int): boolean
+   gameType: GameType
+   currentPlayerColor: Color
+   boardAsArrayList: ArrayList
+   board: Square[][]
+}
+class BoardPane {
+  ~ BoardPane(View, Controller, int, int):
+  - initPlayerNameLabels(): void
+  - loadImages(): void
+  - setChessMenuBar(): void
+  - setConfirmButton(): void
+  - transformBoard2View(int, int): ArrayList
+  - transformView2Board(int, int): ArrayList
+  - generateSquares(): void
+  ~ setPlayersNames(String, String): void
+  ~ changeBoardViewByList(ArrayList): void
+  ~ paintSelected(int, int): void
+  - setImage(Color, PieceType, int, int): void
+}
+class BoardReader {
+  + BoardReader(Board):
+  - setPlayers(String, String): void
+  + setData(): void
+  - getPlayerFromData(String): Player?
+   gameType: char
+   filePath: String
+   piece: String
+   currentMoveColor: char
+}
+class BoardWriter {
+  + BoardWriter():
+  + setData(ArrayList, Color, GameType, Player, Player): void
+  - printPiece(ArrayList): void
+   filePath: String
+}
+class ChessMenuBar {
+  + ChessMenuBar(Controller):
+  - initMenuBar(): void
+}
+class Controller {
+  + Controller():
+  + boardSquareWasClicked(int, int): void
+  + openJarFile(): void
+  - GUIStart(): void
+  + goToMenu(): void
+  - setPlayersNameView(): void
+  + newMultiplayerGameAction(): void
+  + exitAction(): void
+  + startGame(): void
+  + saveGamePGNAction(): void
+  + confirmButtonAction(): void
+}
+class FilesIO {
+  + FilesIO():
+  - getFile(String): File?
+  - createFile(String): void
+  - getFileFromResource(String): File?
+  ~ closePrintStream(): void
+  ~ createDirectory(String): void
+   scanner: String
+   printStreamForUser: String
+   printStream: String
+}
+enum GameType << enumeration >> {
+  + GameType():
+  + values(): GameType[]
+  + valueOf(String): GameType
+}
+class KingPiece {
+  + KingPiece(Color):
+  - isUnderAttack(Square[][], int, int): boolean
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+}
+class KnightPiece {
+  + KnightPiece(Color):
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+}
+class Model {
+  + Model():
+  - selectPiece(int, int): void
+  - changeCurrentPlayerMove(): void
+  + nextMove(): void
+  + squareWasClicked(int, int): void
+  + setPlayers(String, String): void
+  + startGame(GameType): void
+  - resetBoard(): void
+  - addMoveToPGN(int, int, int, int): void
+  + setPlayers(Player, Player): void
+  - makeMove(int, int): void
+  - unselectPiece(): void
+  + saveGameAsPGN(): void
+   player2: Player
+   boardAsArrayList: ArrayList
+   player1: Player
+   player2Name: String
+   view: View
+   player1Name: String
+   gameType: GameType
+   currentPlayerColor: Color
+}
+class PGNSaver {
+  + PGNSaver():
+  + addMove(ArrayList<Object>, ArrayList<Object>): void
+  - saveMoveAsString(PieceType, int, int, int, int, boolean): void
+  - printMovesData(): void
+  - printTags(Player, Player): void
+  + savePGN(Player, Player): void
+}
+class PawnPiece {
+  + PawnPiece(Color, int, int):
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+}
+class Piece {
+  ~ Piece(Color):
+  ~ Piece():
+  ~ makePair(int, int): ArrayList<Integer>
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+  + setPieceMoved(): void
+  + isValidMove(Square[][], int, int, int, int): boolean
+  + setTwoSquareMove(): void
+   pieceMoved: boolean
+   isTwoSquareMove: boolean
+}
+enum PieceType << enumeration >> {
+  + PieceType():
+  + valueOf(String): PieceType
+  + values(): PieceType[]
+}
+class Player {
+  + Player(String, Color):
+   playerColor: Color
+   playerColorAsString: String
+   playerName: String
+}
+class QueenPiece {
+  + QueenPiece(Color, int, int):
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+}
+class RookPiece {
+  + RookPiece(Color, int, int):
+  + makeAvailableMovesList(Square[][], int, int): ArrayList
+}
+class Square {
+  + Square(Color, PieceType, int, int):
+  + getPieceAvailableMoves(Square[][], int, int): ArrayList
+  ~ setQuinInsteadOfPawn(): void
+  + pieceHasMoved(): void
+  - initPiece(): void
+  + isOpponent(Color): boolean
+  + setTwoSquareMove(): void
+  ~ setEmpty(): void
+  + isEmptyOrOpponent(Color): boolean
+  + isValidMove(Square[][], int, int): boolean
+   pieceColor: Color
+   pieceMoved: boolean
+   twoSquareMove: boolean
+   pieceFromSquare: Square
+   empty: boolean
+   king: boolean
+   rook: boolean
+   pieceType: PieceType
+   pawn: boolean
+}
+class Start {
+  + Start():
+  + main(String[]): void
+}
+class View {
+  + View():
+  + setBoardScene(): void
+  + setMenuScene(): void
+  + gameOver(String): void
+  + start(Stage): void
+  - GUIinit(): void
+  + setPlayersNames(String, String): void
+  + changeBoardView(ArrayList): void
+  - addVideoBackground(AnchorPane): void
+  - initMenuScene(): void
+  - initBoardScene(): void
+  + selectPiece(int, int): void
+   model: Model
+   controller: Controller
+   playerName: String
+}
+
+BishopPiece   -[#000082,plain]-^  Piece
+Board        "1" *-[#595959,plain]-> "br\n1" BoardReader
+Board         -[#595959,dashed]->  BoardReader  : "«create»"
+Board        "1" *-[#595959,plain]-> "bw\n1" BoardWriter
+Board         -[#595959,dashed]->  BoardWriter  : "«create»"
+Board        "1" *-[#595959,plain]-> "model\n1" Model
+Board        "1" *-[#595959,plain]-> "board\n*" Square
+Board         -[#595959,dashed]->  Square       : "«create»"
+BoardPane     -[#595959,dashed]->  ChessMenuBar : "«create»"
+BoardPane    "1" *-[#595959,plain]-> "ctrl\n1" Controller
+BoardReader  "1" *-[#595959,plain]-> "board\n1" Board
+BoardReader   -[#000082,plain]-^  FilesIO
+BoardReader   -[#595959,dashed]->  Player       : "«create»"
+BoardWriter   -[#000082,plain]-^  FilesIO
+ChessMenuBar "1" *-[#595959,plain]-> "ctrl\n1" Controller
+Controller    -[#595959,dashed]->  Model        : "«create»"
+Controller   "1" *-[#595959,plain]-> "model\n1" Model
+Controller    -[#595959,dashed]->  View         : "«create»"
+Controller   "1" *-[#595959,plain]-> "view\n1" View
+KingPiece     -[#000082,plain]-^  Piece
+KnightPiece   -[#000082,plain]-^  Piece
+Model        "1" *-[#595959,plain]-> "board\n1" Board
+Model         -[#595959,dashed]->  Board        : "«create»"
+Model        "1" *-[#595959,plain]-> "gameType\n1" GameType
+Model         -[#595959,dashed]->  PGNSaver     : "«create»"
+Model        "1" *-[#595959,plain]-> "pgnSaver\n1" PGNSaver
+Model         -[#595959,dashed]->  Player       : "«create»"
+Model        "1" *-[#595959,plain]-> "currentPlayerMove\n1" Player
+Model        "1" *-[#595959,plain]-> "view\n1" View
+PGNSaver      -[#000082,plain]-^  FilesIO
+PawnPiece     -[#000082,plain]-^  Piece
+QueenPiece    -[#000082,plain]-^  Piece
+RookPiece     -[#000082,plain]-^  Piece
+Square        -[#595959,dashed]->  BishopPiece  : "«create»"
+Square        -[#595959,dashed]->  KingPiece    : "«create»"
+Square        -[#595959,dashed]->  KnightPiece  : "«create»"
+Square        -[#595959,dashed]->  PawnPiece    : "«create»"
+Square       "1" *-[#595959,plain]-> "piece\n1" Piece
+Square       "1" *-[#595959,plain]-> "pieceType\n1" PieceType
+Square        -[#595959,dashed]->  QueenPiece   : "«create»"
+Square        -[#595959,dashed]->  RookPiece    : "«create»"
+Start         -[#595959,dashed]->  Controller   : "«create»"
+View         "1" *-[#595959,plain]-> "boardPane\n1" BoardPane
+View          -[#595959,dashed]->  BoardPane    : "«create»"
+View         "1" *-[#595959,plain]-> "ctrl\n1" Controller
+View         "1" *-[#595959,plain]-> "model\n1" Model
+@enduml
+
+@enduml

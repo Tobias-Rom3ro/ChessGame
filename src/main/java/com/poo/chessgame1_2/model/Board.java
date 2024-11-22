@@ -8,46 +8,61 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
+/**
+ * Clase que representa el tablero de ajedrez.
+ * Maneja la posición de las piezas, las reglas del juego y la interacción con el modelo.
+ */
 public class Board {
-    private final String START_BOARD_FILE = "/boardData/startBoard.txt";
-    private final String SAVED_BOARD_FILE = "/boardData/savedBoard.txt";
-    private final int BOARD_SIZE = 8;
+    private final String START_BOARD_FILE = "/boardData/startBoard.txt"; // Archivo para la configuración inicial del tablero
+    private final String SAVED_BOARD_FILE = "/boardData/savedBoard.txt"; // Archivo para guardar el estado del tablero
+    private final int BOARD_SIZE = 8; // Tamaño del tablero (8x8)
 
-    private final com.poo.chessgame1_2.model.Model model;
-    private final com.poo.chessgame1_2.model.Square[][] board;
-    private BoardReader br;
-    private final BoardWriter bw;
+    private final com.poo.chessgame1_2.model.Model model; // Modelo asociado al tablero
+    private final com.poo.chessgame1_2.model.Square[][] board; // Matriz que representa las casillas del tablero
+    private BoardReader br; // Lector de datos del tablero
+    private final BoardWriter bw; // Escritor de datos del tablero
 
+    /**
+     * Constructor de la clase Board.
+     * Inicializa el tablero y carga la configuración inicial.
+     *
+     * @param model modelo del juego
+     */
     public Board(com.poo.chessgame1_2.model.Model model) {
         this.model = model;
 
         board = new com.poo.chessgame1_2.model.Square[BOARD_SIZE][BOARD_SIZE];
         bw = new BoardWriter();
 
-        initBoardReader();
-        loadBoard();
+        initBoardReader(); // Inicializa el lector de tablero
+        loadBoard(); // Carga la configuración inicial del tablero
     }
 
+    /**
+     * Obtiene la matriz del tablero.
+     *
+     * @return matriz de casillas del tablero
+     */
     public com.poo.chessgame1_2.model.Square[][] getBoard() {
         return board;
     }
 
     /**
-     * BoardReader initialization and set START_BOARD_FILE to initialize pieces positions on the board
+     * Inicializa el lector de tablero y establece el archivo de configuración inicial.
      */
-    private void initBoardReader(){
+    private void initBoardReader() {
         br = new BoardReader(this);
         br.setFilePath(START_BOARD_FILE);
     }
 
     /**
-     *  Get data about square (piece type on it, it's color, coordinates on board)
+     * Obtiene los datos de una casilla específica.
      *
-     * @param boardI I coordinate of square in boardX system
-     * @param boardJ J coordinate of square in boardX system
-     * @return ArrayList with square data in format {Color pieceColor, PieceType pieceType, int boardI, int boardJ}
+     * @param boardI coordenada I de la casilla en el sistema del tablero
+     * @param boardJ coordenada J de la casilla en el sistema del tablero
+     * @return ArrayList con los datos de la casilla en el formato {Color pieceColor, PieceType pieceType, int boardI, int boardJ}
      */
-    public ArrayList getSquareStatus(int boardI, int boardJ){
+    public ArrayList getSquareStatus(int boardI, int boardJ) {
         ArrayList list = new ArrayList();
         list.add(board[boardI][boardJ].getPieceColor());
         list.add(board[boardI][boardJ].getPieceType());
@@ -57,291 +72,270 @@ public class Board {
     }
 
     /**
-     * Return true if King piece placed on this square.
+     * Verifica si en la casilla especificada hay una pieza Rey.
+     *
+     * @param boardI coordenada I de la casilla
+     * @param boardJ coordenada J de la casilla
+     * @return true si hay un Rey en la casilla, false en caso contrario
      */
-    public boolean isKing(int boardI, int boardJ){
+    public boolean isKing(int boardI, int boardJ) {
         return board[boardI][boardJ].isKing();
     }
 
     /**
-     * Return true if square is empty.
+     * Verifica si la casilla especificada está vacía.
      *
-     * @param boardI I coordinate of square
-     * @param  boardJ J coorinate of square
-     * @return true if empty, else false.
+     * @param boardI coordenada I de la casilla
+     * @param boardJ coordenada J de la casilla
+     * @return true si la casilla está vacía, false en caso contrario
      */
-    public boolean isEmptySquare(int boardI, int boardJ){
+    public boolean isEmptySquare(int boardI, int boardJ) {
         return board[boardI][boardJ].isEmpty();
     }
 
     /**
-     * Return true if in square is opponent's piece (another color piece)
+     * Verifica si en la casilla especificada hay una pieza del oponente.
      *
-     * @param boardI I coordinate of square
-     * @param  boardJ J coorinate of square
-     * @param currentPlayerColor another piece color
-     * @return true if piece on this square is another player piece
+     * @param boardI coordenada I de la casilla
+     * @param boardJ coordenada J de la casilla
+     * @param currentPlayerColor color de la pieza del jugador actual
+     * @return true si hay una pieza del oponente en la casilla, false en caso contrario
      */
-    public boolean isOpponentPiece(int boardI, int boardJ, Color currentPlayerColor){
+    public boolean isOpponentPiece(int boardI, int boardJ, Color currentPlayerColor) {
         return board[boardI][boardJ].isOpponent(currentPlayerColor);
     }
 
     /**
-     * Get data about whole board.
+     * Obtiene los datos de todo el tablero.
      *
-     * @return ArrayList of ArrayLists in format { {Color pieceColor, PieceType pieceType, int boardI, int boardJ} ...}
+     * * @return ArrayList de ArrayLists en el formato { {Color pieceColor, PieceType pieceType, int boardI, int boardJ} ...}
      */
-    public ArrayList getBoardAsArrayList(){
+    public ArrayList getBoardAsArrayList() {
         ArrayList boardArrayList = new ArrayList();
-        for(int i = 0; i < BOARD_SIZE; i++){
-            for(int j = 0; j < BOARD_SIZE; j++){
-                boardArrayList.add(getSquareStatus(i,j));
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                boardArrayList.add(getSquareStatus(i, j));
             }
         }
         return boardArrayList;
     }
 
-
     /**
-     * Set new square
+     * Establece una nueva casilla en el tablero.
      *
-     * @param pieceColor piece's color
-     * @param pieceType piece to set on square
-     * @param boardI I coordinate of square
-     * @param boardJ J coordinate of square
+     * @param pieceColor color de la pieza
+     * @param pieceType tipo de pieza a establecer en la casilla
+     * @param boardI coordenada I de la casilla
+     * @param boardJ coordenada J de la casilla
      */
-    public void setSquare(Color pieceColor, PieceType pieceType, int boardI, int boardJ){
-        board[boardI][boardJ] = new com.poo.chessgame1_2.model.Square(pieceColor,pieceType,boardI,boardJ);
+    public void setSquare(Color pieceColor, PieceType pieceType, int boardI, int boardJ) {
+        board[boardI][boardJ] = new com.poo.chessgame1_2.model.Square(pieceColor, pieceType, boardI, boardJ);
     }
 
     /**
+     * Establece el jugador que debe realizar el siguiente movimiento utilizando el color de sus piezas.
      *
-     * Set player, who should make next move using color of his pieces.
-     *
-     * @param color color of piece, that player play
+     * @param color color de la pieza que juega el jugador
      */
-    public void setCurrentPlayerColor(Color color){
+    public void setCurrentPlayerColor(Color color) {
         model.setCurrentPlayerColor(color);
     }
 
     /**
-     * Set game type to model.
-     * @param gameType type of game
+     * Establece el tipo de juego en el modelo.
+     *
+     * @param gameType tipo de juego
      */
-    public void setGameType(GameType gameType){
+    public void setGameType(GameType gameType) {
         model.setGameType(gameType);
     }
 
     /**
-     * Set players data.
+     * Establece los datos de los jugadores.
      *
-     * @param player1 player1 Player instance
-     * @param player2 player2 Player instance
+     * @param player1 instancia del jugador 1
+     * @param player2 instancia del jugador 2
      */
-    public void setPlayer(Player player1, Player player2){
-        model.setPlayers(player1,player2);
+    public void setPlayer(Player player1, Player player2) {
+        model.setPlayers(player1, player2);
     }
 
     /**
-     * Load board date from file.
+     * Carga los datos del tablero desde un archivo.
      */
-    private void loadBoard(){
+    private void loadBoard() {
         br.setData();
     }
 
     /**
-     *  Load board from SAVED_BOARD_FILE using BoardReade/BoardWriter annotation format
-     */
-    public void loadSavedGame(){
-        br.setFilePath(SAVED_BOARD_FILE);
-        loadBoard();
-    }
-
-    /**
-     * Save game to SAVED_BOARD_FILE in BoardReade/BoardWriter annotation format
-     */
-    public void saveGame(){
-        bw.setFilePath(SAVED_BOARD_FILE);
-        ArrayList list = getBoardAsArrayList();
-        System.out.println("BoardSize2 " + list.size());
-        bw.setData(list,model.getCurrentPlayerColor(),model.getGameType(),model.getPlayer1(),model.getPlayer2());
-        System.out.println("Game was saved!");
-    }
-
-    /**
-     * Return true if move valid
+     * Verifica si el movimiento es válido.
      *
-     * @param fromI boardI start coordinate of piece to move
-     * @param fromJ boardJ start coordinate of piece to move
-     * @param toI   boardI destination coordinate of piece to move
-     * @param toJ   boardI destination coordinate of piece to move
-     * @return  true if move valid
+     * @param fromI coordenada I de inicio de la pieza a mover
+     * @param fromJ coordenada J de inicio de la pieza a mover
+     * @param toI coordenada I de destino de la pieza a mover
+     * @param toJ coordenada J de destino de la pieza a mover
+     * @return true si el movimiento es válido, false en caso contrario
      */
-    public boolean isValidMove(int fromI, int fromJ, int toI, int toJ){
-        return board[fromI][fromJ].isValidMove(board,toI,toJ);
+    public boolean isValidMove(int fromI, int fromJ, int toI, int toJ) {
+        return board[fromI][fromJ].isValidMove(board, toI, toJ);
     }
 
     /**
-     *  Returns true if king's move was part of roque
+     * Verifica si el movimiento del rey fue parte de un enroque.
      *
-     * @param fromI king's start boardI position
-     * @param fromJ king's start boardJ position
-     * @param toI boardI coordinate where king moves
-     * @param toJ boardJ coordinate where king moves
-     * @return true if move was a part of roque
+     * @param fromI posición inicial del rey en coordenada I
+     * @param fromJ posición inicial del rey en coordenada J
+     * @param toI coordenada I donde se mueve el rey
+     * @param toJ coordenada J donde se mueve el rey
+     * @return true si el movimiento fue parte de un enroque, false en caso contrario
      */
-    private boolean isRoque(int fromI, int fromJ, int toI, int toJ){
+    private boolean isRoque(int fromI, int fromJ, int toI, int toJ) {
         return board[fromI][fromJ].isKing() && Math.abs(fromI - toI) == 2;
     }
 
     /**
-     *  Make Rook move if king make roque move.
+     * Realiza el movimiento de la torre si el rey realiza un enroque.
      *
-     * @param fromI king's start boardI position
-     * @param fromJ king's start boardJ position
-     * @param toI   boardI coordinate where king moves
-     * @param toJ   boardJ coordinate where king moves
-     * @return Arraylist with board changes
+     * @param fromI posición inicial del rey en coordenada I
+     * @param fromJ posición inicial del rey en coordenada J
+     * @param toI coordenada I donde se mueve el rey
+     * @param toJ coordenada J donde se mueve el rey
+     * @return ArrayList con los cambios en el tablero
      */
-    private ArrayList makeRoqueMove(int fromI, int fromJ, int toI, int toJ){
+    private ArrayList makeRoqueMove(int fromI, int fromJ, int toI, int toJ) {
         ArrayList roqueMove = new ArrayList();
-        if(fromI - toI == 2){
-            roqueMove = makeMove(fromI-4,fromJ,fromI-1,toJ);
-        }
-        else{
-            roqueMove = makeMove(fromI+3,fromJ,fromI+1,toJ);
+        if (fromI - toI == 2) {
+            roqueMove = makeMove(fromI - 4, fromJ, fromI - 1, toJ);
+        } else {
+            roqueMove = makeMove(fromI + 3, fromJ, fromI + 1, toJ);
         }
 
         return roqueMove;
     }
 
     /**
+     * Verifica si el movimiento actual fue una promoción.
      *
-     * Check if current move was promotion.
-     *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
-     * @return true if move was promotion.
+     * @param fromI coordenada I de inicio de la pieza
+     * * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
+     * @return true si el movimiento fue una promoción, false en caso contrario
      */
-    private boolean isPromotion(int fromI, int fromJ, int toI, int toJ){
-        if(!board[fromI][fromJ].isPawn()){
+    private boolean isPromotion(int fromI, int fromJ, int toI, int toJ) {
+        if (!board[fromI][fromJ].isPawn()) {
             return false;
         }
-        return toJ == 0 || toJ == BOARD_SIZE-1;
-
+        return toJ == 0 || toJ == BOARD_SIZE - 1;
     }
 
     /**
-     * Make promotion, change pawn to queen.
+     * Realiza la promoción, cambiando un peón por una reina.
      *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
+     * @param fromI coordenada I de inicio de la pieza
+     * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
      */
-    private void makePromotion(int fromI, int fromJ, int toI, int toJ){
-        System.out.println("PROMOTION");
+    private void makePromotion(int fromI, int fromJ, int toI, int toJ) {
+        System.out.println("PROMOCIÓN");
         board[fromI][fromJ].setQuinInsteadOfPawn();
     }
 
     /**
-     * Check if pawn moved two squares forward.
+     * Verifica si un peón se movió dos casillas hacia adelante.
      *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
-     * @return true if pawn moved two squares forward.
+     * @param fromI coordenada I de inicio de la pieza
+     * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
+     * @return true si el peón se movió dos casillas hacia adelante, false en caso contrario
      */
-    private boolean isTwoSquareMove(int fromI, int fromJ, int toI, int toJ){
+    private boolean isTwoSquareMove(int fromI, int fromJ, int toI, int toJ) {
         return board[fromI][fromJ].isPawn() && Math.abs(fromJ - toJ) == 2;
     }
 
     /**
-     * Set TwoSquareMove (pawn moved two squares forward)
+     * Establece el movimiento de dos casillas (el peón se movió dos casillas hacia adelante).
      *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
+     * @param fromI coordenada I de inicio de la pieza
+     * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
      */
-    private void setTwoSquareMove(int fromI, int fromJ, int toI, int toJ){
+    private void setTwoSquareMove(int fromI, int fromJ, int toI, int toJ) {
         board[fromI][fromJ].setTwoSquareMove();
     }
 
     /**
+     * Verifica si el movimiento actual es en Passant.
      *
-     * Check is current move en Passant.
-     *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
-     * @return true is current move is en Passant.
+     * @param fromI coordenada I de inicio de la pieza
+     * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
+     * @return true si el movimiento actual es en Passant, false en caso contrario
      */
-    private boolean isEnPassant(int fromI, int fromJ, int toI, int toJ){
-        if(!board[fromI][fromJ].isPawn()){
+    private boolean isEnPassant(int fromI, int fromJ, int toI, int toJ) {
+        if (!board[fromI][fromJ].isPawn()) {
             return false;
         }
         return Math.abs(fromI - toI) == 1 && Math.abs(fromJ - toJ) == 1 && board[toI][toJ].isEmpty();
     }
 
     /**
-     * Make en Passant move (capture opponent's pawn)
+     * Realiza el movimiento en Passant (captura el peón del oponente).
      *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
-     * @return ArrayList with changes in format
+     * @param fromI coordenada I de inicio de la pieza
+     * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
+     * @return ArrayList con los cambios en formato
      *         { { Color pieceColor, PieceType pieceType, boardI, boardJ } ...}
      */
-    private ArrayList makeEnPassant(int fromI, int fromJ, int toI, int toJ){
+    private ArrayList makeEnPassant(int fromI, int fromJ, int toI, int toJ) {
         ArrayList enPassantMove;
-        if(fromI < toI){
-            board[fromI+1][fromJ].setEmpty();
-            enPassantMove = getSquareStatus(fromI+1,fromJ);
-        }
-        else{
-            board[fromI-1][fromJ].setEmpty();
-            enPassantMove = getSquareStatus(fromI-1,fromJ);
+        if (fromI < toI) {
+            board[fromI + 1][fromJ].setEmpty();
+            enPassantMove = getSquareStatus(fromI + 1, fromJ);
+        } else {
+            board[fromI - 1][fromJ].setEmpty();
+            enPassantMove = getSquareStatus(fromI - 1, fromJ);
         }
         return enPassantMove;
     }
 
     /**
-     * Make move (check roque, check en Passant, check promotion)
+     * Realiza un movimiento (verifica enroque, en Passant y promoción).
      *
-     * @param fromI piece I start coordinate
-     * @param fromJ piece J start coordinate
-     * @param toI piece I destination coordinate
-     * @param toJ piece J destination coordinate
-     * @return ArrayList with changes in format
+     * @param fromI coordenada I de inicio de la pieza
+     * @param fromJ coordenada J de inicio de la pieza
+     * @param toI coordenada I de destino de la pieza
+     * @param toJ coordenada J de destino de la pieza
+     * @return ArrayList con los cambios en formato
      *         { { Color pieceColor, PieceType pieceType, boardI, boardJ } ...}
      */
-    public ArrayList makeMove(int fromI, int fromJ, int toI, int toJ){
+    public ArrayList makeMove(int fromI, int fromJ, int toI, int toJ) {
         /**
-         * Makes move if it's available (changes)
+         * Realiza el movimiento si es válido (cambia el estado del tablero)
          */
 
         ArrayList globalList = new ArrayList();
 
-        // Check roque
-        if(isRoque(fromI,fromJ,toI,toJ)){
-            globalList = makeRoqueMove(fromI,fromJ,toI,toJ);
+        // Verifica enroque
+        if (isRoque(fromI, fromJ, toI, toJ)) {
+            globalList = makeRoqueMove(fromI, fromJ, toI, toJ);
         }
-        // Check promotion
-        if(isPromotion(fromI,fromJ,toI,toJ)){
-            makePromotion(fromI,fromJ,toI,toJ);
+        // Verifica promoción
+        if (isPromotion(fromI, fromJ, toI, toJ)) {
+            makePromotion(fromI, fromJ, toI, toJ);
         }
-        if(isTwoSquareMove(fromI,fromJ,toI,toJ)){
-            setTwoSquareMove(fromI,fromJ,toI,toJ);
+        if (isTwoSquareMove(fromI, fromJ, toI, toJ)) {
+            setTwoSquareMove(fromI, fromJ, toI, toJ);
         }
-        // Check en Passant
-        if(isEnPassant(fromI,fromJ,toI,toJ)){
-            globalList.add(makeEnPassant(fromI,fromJ,toI,toJ));
+        // Verifica en Passant
+        if (isEnPassant(fromI, fromJ, toI, toJ)) {
+            globalList.add(makeEnPassant(fromI, fromJ, toI, toJ));
         }
 
         board[toI][toJ].setPieceFromSquare(board[fromI][fromJ]);
@@ -349,48 +343,9 @@ public class Board {
 
         board[toI][toJ].pieceHasMoved();
 
-        globalList.add(getSquareStatus(toI,toJ));
-        globalList.add(getSquareStatus(fromI,fromJ));
+        globalList.add(getSquareStatus(toI, toJ));
+        globalList.add(getSquareStatus(fromI, fromJ));
 
         return globalList;
-    }
-
-
-    /**
-     * DEBUG PRINT BOARD
-     */
-    public void printBoard() {
-        for(int i = 0; i < BOARD_SIZE; i++){
-            for(int j = 0; j < BOARD_SIZE; j++){
-                String current = "K";
-                switch (board[j][i].getPieceType()){
-                    case BISHOP:
-                        current = "B ";
-                        break;
-                    case KING:
-                        current = "K ";
-                        break;
-                    case KNIGHT:
-                        current = "N ";
-                        break;
-                    case EMPTY:
-                        current = "E ";
-                        break;
-                    case PAWN:
-                        current = "P ";
-                        break;
-                    case ROOK:
-                        current = "R ";
-                        break;
-                    case QUEEN:
-                        current = "Q ";
-                        break;
-                }
-                System.out.print(current);
-
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }
