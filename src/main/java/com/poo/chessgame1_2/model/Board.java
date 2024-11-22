@@ -14,7 +14,6 @@ import java.util.ArrayList;
  */
 public class Board {
     private final String START_BOARD_FILE = "/boardData/startBoard.txt"; // Archivo para la configuración inicial del tablero
-    private final String SAVED_BOARD_FILE = "/boardData/savedBoard.txt"; // Archivo para guardar el estado del tablero
     private final int BOARD_SIZE = 8; // Tamaño del tablero (8x8)
 
     private final com.poo.chessgame1_2.model.Model model; // Modelo asociado al tablero

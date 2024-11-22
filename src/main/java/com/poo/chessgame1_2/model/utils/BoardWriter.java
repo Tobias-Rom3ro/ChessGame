@@ -9,8 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Clase que maneja la escritura del estado del tablero de ajedrez en un archivo.
- * Permite guardar la información sobre las piezas en el tablero, el jugador que tiene el próximo movimiento,
- * el tipo de juego (multijugador o no), y los jugadores involucrados.
+ * Permite guardar la información sobre las piezas en el tablero, el jugador que tiene el próximo movimiento.
  */
 public class BoardWriter extends FilesIO {
 
