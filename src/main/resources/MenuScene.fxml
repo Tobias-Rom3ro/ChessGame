@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.chessgame1_2.Controller">
-    <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
-        <Image url="@ChessBackground.jpg" />
-    </ImageView>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.chessgame1_2.controller.Controller">
     <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -26,10 +21,8 @@
         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-spacing: 10;">
             <Button mnemonicParsing="false" onAction="#openJarFile" prefHeight="26.0" prefWidth="175.0" text="Leer partida" textAlignment="CENTER" />
             <Button mnemonicParsing="false" onAction="#newMultiplayerGameAction" prefHeight="26.0" prefWidth="175.0" text="Nueva partida" textAlignment="CENTER" />
-            <Button mnemonicParsing="false" onAction="#continueGameAction" prefHeight="26.0" prefWidth="175.0" text="Continue" textAlignment="CENTER" />
-            <Button mnemonicParsing="false" onAction="#exitAction" prefWidth="175.0" text="Exit" textAlignment="CENTER" />
+            <Button mnemonicParsing="false" onAction="#exitAction" prefWidth="175.0" text="Salir" textAlignment="CENTER" />
             <GridPane.rowIndex>1</GridPane.rowIndex>
         </VBox>
     </GridPane>
-
 </AnchorPane>

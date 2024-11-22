@@ -1,9 +1,7 @@
 package com.poo.chessgame1_2.model;
 
-import com.poo.chessgame1_2.model.players.ComputerPlayer;
 import com.poo.chessgame1_2.model.players.Player;
 import com.poo.chessgame1_2.model.utils.PGNSaver;
-import javafx.beans.property.LongProperty;
 import javafx.scene.paint.Color;
 
 import com.poo.chessgame1_2.view.View;
@@ -27,58 +25,7 @@ public class Model {
     private boolean moveHasDone = false;
 
     public Model(){
-        initTimers();
-    }
 
-    /**
-     * Initialise computer player (get information from player2 if it's possible)
-     */
-    private void initComputerPlayer(){
-        ChessTimer chessTimer = player2.getPlayerTimer();
-        player2 = new ComputerPlayer(Color.BLACK);
-        player2.setPlayerTimer(chessTimer);
-
-    }
-
-    /**
-     * Initialise timers and set it to Player player1, player2
-     */
-    private void initTimers(){
-        player1.setPlayerTimer(new ChessTimer(view));
-        player2.setPlayerTimer(new ChessTimer(view));
-    }
-
-    /**
-     * Set time on timers
-     * @param timer1 1st timer time
-     * @param timer2 1st timer time
-     */
-    void setTimers(long timer1, long timer2){
-        stopTimers();
-        player1.setTimerValue(timer1);
-        player2.setTimerValue(timer2);
-    }
-
-    /**
-     * Stop all player's timers
-     */
-    private void stopTimers(){
-        player1.stopTimer();
-        player2.stopTimer();
-    }
-
-    /**
-     * Is used for update timer1 value in view
-     */
-    public LongProperty getPlayer1Timestamp(){
-        return player1.getTimestamp();
-    }
-
-    /**
-     * Is used for update timer2 value in view
-     */
-    public LongProperty getPlayer2Timestamp(){
-        return player2.getTimestamp();
     }
 
     /**
@@ -106,14 +53,6 @@ public class Model {
         return gameType;
     }
 
-    /**
-     *  Indicate type of game.
-     *
-     * @return true - singleplayer game. false - multiplayer game.
-     */
-    private boolean isSinglePlayer() {
-        return gameType == GameType.SINGLEPLAYER;
-    }
 
     /**
      * Get player1 Player innstance
@@ -160,18 +99,6 @@ public class Model {
     }
 
     /**
-     *
-     * Set players data in singleplayer mode
-     *
-     * @param player1Name name of player1
-     */
-    public void setPlayers(String player1Name){
-        player1.setPlayerName(player1Name);
-        player1.setPlayerColor(Color.WHITE);
-        initComputerPlayer();
-    }
-
-    /**
      * Set players data in multiplayer mode
      *
      * @param player1Name name of player1
@@ -211,18 +138,6 @@ public class Model {
         }
     }
 
-    /**
-     * Start timer of player who should make move
-     */
-    private void runCurrentPlayersTimer(){
-        if(currentPlayerMove == player1){
-            player1.startTimer();
-        }
-        else {
-            player2.startTimer();
-        }
-    }
-
 
     /**
      * Chane right to move to another player.
@@ -236,18 +151,13 @@ public class Model {
         else{
             return;
         }
-        if(isSinglePlayer() && currentPlayerMove == player2){
-            makeComputerMove();
-        }
         unselectPiece();
     }
     /**
      * Change currentPlayerMove. Stop previous player timer and start currentPlayer timer.
      */
     private  void changeCurrentPlayerMove(){
-        currentPlayerMove.stopTimer();
         currentPlayerMove = currentPlayerMove == player1 ? player2 : player1;
-        currentPlayerMove.startTimer();
     }
 
 
@@ -294,18 +204,6 @@ public class Model {
     }
 
     /**
-     * FOR SINGLEPLAYER GAME ONLY. Make computer move when game is singleplayer.
-     */
-    private void makeComputerMove(){
-        ArrayList move = player2.makeMove(BOARD_SIZE, board.getBoard());
-        selectPiece((int) move.get(0), (int) move.get(1));
-        makeMove((int) move.get(2), (int) move.get(3));
-        nextMove();
-
-    }
-
-
-    /**
      * Make move from selectedI selectedJ to toI toJ, change the board and update board in view.
      * @param toI piece I destination coordinate in Board system
      * @param toJ piece J destination coordinate in Board system
@@ -321,7 +219,6 @@ public class Model {
         view.changeBoardView(changesList);
 
         if(isKingCaptured){
-            stopTimers();
             view.gameOver(currentPlayerMove.getPlayerName());
         }
 
@@ -374,30 +271,9 @@ public class Model {
         moveHasDone = false;
         resetBoard();
 
-        setTimers(0,0);
-        runCurrentPlayersTimer();
         view.changeBoardView(getBoardAsArrayList());
 
     }
-
-    /**
-     * load board from saved game file and init Computer player if game type is singleplayer.
-     */
-    public void continueGame(){
-        board.loadSavedGame();
-        runCurrentPlayersTimer();
-        if(isSinglePlayer()){
-            initComputerPlayer();
-        }
-
-        view.changeBoardView(getBoardAsArrayList());
-    }
-
-    /**
-     * Save game to file in BoardWriter/BoardReader annotation.
-     */
-    public void saveGame(){board.saveGame();}
-
 
     /**
      * Save game in PGN format.

@@ -92,8 +92,8 @@ public class PGNSaver extends FilesIO {
      * @param player2 player2, Player instance
      */
     private void printTags(Player player1, Player player2) {
-        printWriter.println("[Event \"Javafx Che ss Game\"]");
-        printWriter.println("[Site \"Prague, Czech Republic\"]");
+        printWriter.println("[Event \"Partida de prueba :) \"]");
+        printWriter.println("[Site \"Santa Marta, Colombia\"]");
         printWriter.println("[Date \"" + new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()) + "\"]");
         printWriter.println("[" + player1.getPlayerColorAsString() + " \"" + player1.getPlayerName() + "\"]");
         printWriter.println("[" + player2.getPlayerColorAsString() + " \"" + player2.getPlayerName() + "\"]");

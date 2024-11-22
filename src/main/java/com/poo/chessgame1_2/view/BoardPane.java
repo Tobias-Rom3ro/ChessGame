@@ -1,19 +1,14 @@
 package com.poo.chessgame1_2.view;
 
-import com.poo.chessgame1_2.Controller;
-import com.poo.chessgame1_2.model.Model;
+import com.poo.chessgame1_2.controller.ChessMenuBar;
+import com.poo.chessgame1_2.controller.Controller;
 import com.poo.chessgame1_2.model.pieces.PieceType;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -22,14 +17,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 public class BoardPane extends GridPane {
-    private final Model model;
     private final Controller ctrl;
     private final int BOARD_SIZE;
     private final int SQUARE_SIZE_PX;
@@ -39,18 +31,14 @@ public class BoardPane extends GridPane {
 
     private final Label player1Name = new Label(), player2Name = new Label();
 
-    Label player1Timer = new Label("00:00"), player2Timer = new Label("00:00");
-    ChangeListener<Number> timer1Listener, timer2Listener;
-
     private final Color selectedSquareColor = Color.GOLD;
     private final Color evenSquareColor = Color.BEIGE;
     private final Color oddSquareColor = Color.SADDLEBROWN;
     private final Color transparentColor = Color.TRANSPARENT;
     private final Color backgroundColor = Color.LIGHTGOLDENRODYELLOW;
 
-    BoardPane(View view, Controller ctrl, Model model, int BOARD_SIZE, int SQUARE_SIZE_PX) {
+    BoardPane(View view, Controller ctrl, int BOARD_SIZE, int SQUARE_SIZE_PX) {
         this.ctrl = ctrl;
-        this.model = model;
 
         this.BOARD_SIZE = BOARD_SIZE;
         this.SQUARE_SIZE_PX = SQUARE_SIZE_PX;
@@ -69,9 +57,6 @@ public class BoardPane extends GridPane {
         setTimerButton();
 
         initPlayerNameLabels();
-
-        initTimersLabels();
-        initTimersListeners();
     }
 
 
@@ -153,46 +138,6 @@ public class BoardPane extends GridPane {
         this.add(timerButton,11,4,14,4);
     }
 
-    /**
-     * Initialise labels for timers value.
-     */
-    private void initTimersLabels(){
-        player1Timer.setMaxWidth(4 * SQUARE_SIZE_PX);
-        player1Timer.setMaxHeight(SQUARE_SIZE_PX);
-        player1Timer.setAlignment(Pos.CENTER);
-        player1Timer.setFont(Font.font(null, FontWeight.BOLD, 25));
-        player1Timer.setTextAlignment(TextAlignment.CENTER);
-        this.add(player1Timer,11,5,14,5);
-        GridPane.setHalignment(player1Timer, HPos.CENTER);
-
-        player2Timer.setFont(player1Timer.getFont());
-        this.add(player2Timer,11,3,14,3);
-        GridPane.setHalignment(player2Timer, HPos.CENTER);
-
-    }
-
-    /**
-     * Initialisation of Timer Listeners, what get actual timer value from model.
-     */
-    private void initTimersListeners(){
-        timer1Listener = (observable, oldValue, newValue) -> Platform.runLater(() -> {
-            long value = (long) newValue;
-            Date dateTime = new Date(value);
-            String timeString = String.format("%02d",dateTime.getMinutes()) + ":" + String.format("%02d",dateTime.getSeconds());
-            player1Timer.setText(timeString);
-        });
-
-
-        timer2Listener = (observable, oldValue, newValue) -> Platform.runLater(() -> {
-            long value = (long) newValue;
-            Date dateTime = new Date(value);
-            String timeString = String.format("%02d",dateTime.getMinutes()) + ":" + String.format("%02d",dateTime.getSeconds());
-            player2Timer.setText(timeString);
-        });
-
-        model.getPlayer1Timestamp().addListener(timer1Listener);
-        model.getPlayer2Timestamp().addListener(timer2Listener);
-    }
 
     /**
      * Generate all background and board squares. Make board squares clickable.

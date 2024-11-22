@@ -40,7 +40,7 @@ public class BoardWriter extends FilesIO{
         printWriter.println("@" + nextMoveString);
 
         // write gameType
-        String isSinglePlayerString = gameType == GameType.SINGLEPLAYER ? "s" : "m";
+        String isSinglePlayerString = gameType == GameType.MULTIPLAYER ? "s" : "m";
         printWriter.println("$" + isSinglePlayerString);
 
         //write players names and colors
@@ -48,13 +48,6 @@ public class BoardWriter extends FilesIO{
         String playerColor2 = player2.getPlayerColor() == Color.BLACK ? "b" : "w";
         printWriter.println("%" + playerColor1 + "_" + player1.getPlayerName());
         printWriter.println("%" + playerColor2 + "_" + player2.getPlayerName());
-
-        //write players time and color
-        String player1Time = playerColor1 + "_" + player1.getTimeAsLong();
-        String player2Time = playerColor2 + "_" + player2.getTimeAsLong();
-        printWriter.println("&" + player1Time);
-        printWriter.println("&" + player2Time);
-
 
         closePrintStream();
     }

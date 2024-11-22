@@ -143,15 +143,6 @@ public class Board {
     }
 
     /**
-     * Set new values on timer.
-     *
-     * @param timer1 timer1 value
-     * @param timer2 timer2 value
-     */
-    public void setTimers(long timer1, long timer2){
-        model.setTimers(timer1,timer2);
-    }
-    /**
      * Load board date from file.
      */
     private void loadBoard(){

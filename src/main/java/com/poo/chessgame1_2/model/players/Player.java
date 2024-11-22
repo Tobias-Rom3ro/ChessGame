@@ -1,9 +1,6 @@
 package com.poo.chessgame1_2.model.players;
 
-import com.poo.chessgame1_2.model.ChessTimer;
 import com.poo.chessgame1_2.model.Square;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -12,24 +9,9 @@ public class Player {
     String name;
     Color playerColor;
 
-    private ChessTimer playerTimer;
-
     public Player(String name, Color playerColor) {
         this.name = name;
         this.playerColor = playerColor;
-    }
-
-       Player() {}
-
-    /**
-     * Set chess Timer.
-     */
-    public void setPlayerTimer(ChessTimer chessTimer){
-        this.playerTimer = chessTimer;
-        if(!playerTimer.isAlive()){
-            this.playerTimer.start();
-        }
-
     }
 
     /**
@@ -67,13 +49,6 @@ public class Player {
         this.name = newName;
     }
 
-    /**
-     * Return ChessTimer playerTimer instance.
-     *
-     */
-    public ChessTimer getPlayerTimer() {
-        return playerTimer;
-    }
 
     /**
      * Set new color to player
@@ -84,57 +59,4 @@ public class Player {
         this.playerColor = playerColor;
     }
 
-    /**
-     * Make move (useless for usual player, just for ComputerPlayer)
-     *
-     * @param BOARD_SIZE size of board (8)
-     * @param board board representation as Square[][]
-     * @return null
-     */
-    public ArrayList makeMove(int BOARD_SIZE, Square[][] board){return null;}
-
-    /**
-     * Stop player's timer.
-     */
-    public void stopTimer(){
-        playerTimer.stopTimer();
-    }
-
-    /**
-     * Run player's timer.
-     */
-    public void startTimer(){
-        playerTimer.startTimer();
-    }
-
-    /**
-     *  Get timestamp (for view listaners)
-     *
-     * @return LongProperty timestamp
-     */
-    public LongProperty getTimestamp(){
-        if(playerTimer != null){
-            return playerTimer.getTimestamp();
-        }
-        return new SimpleLongProperty(this,"",0);
-
-    }
-
-    /**
-     * Get time as long type.
-     *
-     * @return longTime
-     */
-    public long getTimeAsLong(){
-        return playerTimer.getTimeAsLong();
-    }
-
-    /**
-     * Set new value to timer
-     *
-     * @param timerValue long value
-     */
-    public void setTimerValue(long timerValue){
-        playerTimer.setTimerValue(timerValue);
-    }
 }

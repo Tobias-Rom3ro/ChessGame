@@ -1,6 +1,6 @@
 package com.poo.chessgame1_2.view;
 
-import com.poo.chessgame1_2.Controller;
+import com.poo.chessgame1_2.controller.Controller;
 import com.poo.chessgame1_2.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -56,8 +61,10 @@ public class View extends Application {
         View.stage = stage;
         GUIinit();
         setMenuScene();
-        stage.setTitle("JavaFX Chess");
+        stage.setTitle("Ajedrez");
         stage.setResizable(false);
+        Image icon = new Image(getClass().getResourceAsStream("/icon.png"));
+        stage.getIcons().add(icon);
         stage.show();
     }
 
@@ -76,16 +83,35 @@ public class View extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(View.class.getResource("/MenuScene.fxml"));
         try {
             menuScene = new Scene(fxmlLoader.load());
+            AnchorPane root = (AnchorPane) menuScene.getRoot();
+            addVideoBackground(root);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void addVideoBackground(AnchorPane root) {
+        String videoPath = getClass().getResource("/videoBackground.mp4").toExternalForm();
+
+        Media media = new Media(videoPath);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setAutoPlay(true);
+
+        MediaView mediaView = new MediaView(mediaPlayer);
+        mediaView.fitWidthProperty().bind(root.widthProperty());
+        mediaView.fitHeightProperty().bind(root.heightProperty());
+        mediaView.setPreserveRatio(false);
+
+        root.getChildren().add(0, mediaView);
     }
 
     /**
      * Initialise board scene.
      */
     private void initBoardScene(){
-        boardPane = new BoardPane(this,ctrl,model,BOARD_SIZE,SQUARE_SIZE_PX);
+        boardPane = new BoardPane(this,ctrl,BOARD_SIZE,SQUARE_SIZE_PX);
         boardScene = new Scene(boardPane,windowSizeX,windowSizeY);
     }
 
@@ -128,14 +154,14 @@ public class View extends Application {
      * @return player name
      */
     public String getPlayerName(){
-        TextInputDialog dialog = new TextInputDialog("Name");
-        dialog.setTitle("Player's name");
-        dialog.setHeaderText("Please enter your name");
+        TextInputDialog dialog = new TextInputDialog("Nombre");
+        dialog.setTitle("Nombre del jugador");
+        dialog.setHeaderText("Introduce tu nombre");
 
         Optional<String> result = dialog.showAndWait();
 
         if(result.isEmpty()){
-            return "Unknown Player";
+            return "Jugador desconocido";
         }
 
         return  result.get();
@@ -157,13 +183,13 @@ public class View extends Application {
     public void gameOver(String winnerName){
         Dialog<Object> dialog = new Dialog<>();
         dialog.initStyle(StageStyle.UTILITY);
-        dialog.setTitle("Game over!");
-        dialog.setHeaderText(winnerName + " win!");
+        dialog.setTitle("Fin del juego!");
+        dialog.setHeaderText(winnerName + " ganó!");
 
 
-        ButtonType newGameButton = new ButtonType("Go to menu");
-        ButtonType SavePGNButton = new ButtonType("Save as PGN");
-        ButtonType ExitButton  = new ButtonType("Exit");
+        ButtonType newGameButton = new ButtonType("Ir al menú");
+        ButtonType SavePGNButton = new ButtonType("Guardar partida (PGN)");
+        ButtonType ExitButton  = new ButtonType("Salir");
 
         dialog.getDialogPane().getButtonTypes().addAll(newGameButton,SavePGNButton,ExitButton);
         Optional<Object> result = dialog.showAndWait();
