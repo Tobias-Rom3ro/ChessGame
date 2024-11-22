@@ -4,6 +4,12 @@ import com.poo.chessgame1_2.model.GameType;
 import com.poo.chessgame1_2.model.Model;
 import com.poo.chessgame1_2.view.View;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+
 import static java.lang.System.exit;
 
 public class Controller {
@@ -85,5 +91,23 @@ public class Controller {
     public void saveAndGoToMenu(){
         model.saveGame();
         view.setMenuScene();
+    }
+
+    public void openJarFile() throws IOException, URISyntaxException {
+        File jarFile = new File(getClass().getResource("/Ajedrez2.0.jar").toURI());
+        ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarFile.getAbsolutePath());
+        processBuilder.redirectErrorStream(true); // Combina la salida de error con la salida estándar
+        Process process = processBuilder.start();
+
+        new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line); // O maneja la salida de otra manera
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
